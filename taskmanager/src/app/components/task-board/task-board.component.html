@@ -1,0 +1,90 @@
+<div class="max-w-6xl mx-auto">
+  <header class="mb-6">
+    <h1 class="text-3xl font-bold text-slate-800">Gerenciador de Tarefas - Estudos</h1>
+    <p class="text-slate-600 mt-1">Cards em 3 colunas: Para fazer, Em andamento, Concluídas.</p>
+  </header>
+
+  <div class="mb-6 flex items-center justify-between">
+    <div>
+      <p class="text-slate-600">Adicione novas tarefas pelo botão <span class="font-semibold">+</span>.</p>
+    </div>
+    <div>
+      <button (click)="openForm()" aria-label="Adicionar tarefa" class="w-10 h-10 rounded-full bg-indigo-600 text-white flex items-center justify-center text-2xl hover:bg-indigo-700">+</button>
+    </div>
+  </div>
+
+  <main>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <!-- TODO -->
+      <div>
+        <h2 class="font-semibold mb-2">Para fazer</h2>
+        <div
+          class="space-y-3 min-h-[200px] p-3 bg-white rounded shadow-sm"
+          (dragover)="onDragOver($event)"
+          (drop)="onDrop($event,'todo')">
+          <ng-container *ngFor="let t of tasks() | slice:0:999">
+            <ng-container *ngIf="t.status === 'todo'">
+              <app-task-card
+                [task]="t"
+                (edit)="openForm(t.id)"
+                (delete)="onDelete($event)"
+                (dragstart)="onDragStart($event, t.id)">
+              </app-task-card>
+            </ng-container>
+          </ng-container>
+        </div>
+      </div>
+
+      <!-- DOING -->
+      <div>
+        <h2 class="font-semibold mb-2">Em andamento</h2>
+        <div
+          class="space-y-3 min-h-[200px] p-3 bg-white rounded shadow-sm"
+          (dragover)="onDragOver($event)"
+          (drop)="onDrop($event,'doing')">
+          <ng-container *ngFor="let t of tasks() | slice:0:999">
+            <ng-container *ngIf="t.status === 'doing'">
+              <app-task-card
+                [task]="t"
+                (edit)="openForm(t.id)"
+                (delete)="onDelete($event)"
+                (dragstart)="onDragStart($event, t.id)">
+              </app-task-card>
+            </ng-container>
+          </ng-container>
+        </div>
+      </div>
+
+      <!-- DONE -->
+      <div>
+        <h2 class="font-semibold mb-2">Concluídas</h2>
+        <div
+          class="space-y-3 min-h-[200px] p-3 bg-white rounded shadow-sm"
+          (dragover)="onDragOver($event)"
+          (drop)="onDrop($event,'done')">
+          <ng-container *ngFor="let t of tasks() | slice:0:999">
+            <ng-container *ngIf="t.status === 'done'">
+              <app-task-card
+                [task]="t"
+                (edit)="openForm(t.id)"
+                (delete)="onDelete($event)"
+                (dragstart)="onDragStart($event, t.id)">
+              </app-task-card>
+            </ng-container>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="mt-6 text-sm text-slate-500">Dados mantidos em memória (serviço).</footer>
+
+  <!-- Form modal (componente filho) -->
+  <app-task-form
+    *ngIf="showForm"
+    [editingTaskId]="editingTaskId"
+    (close)="closeForm()"
+    (add)="onAdd($event)"
+    (update)="onUpdate($event.id, $event.patch)">
+  </app-task-form>
+</div>
